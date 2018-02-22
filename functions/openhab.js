@@ -478,12 +478,12 @@ function syncAndDiscoverDevices(token, success, failure) {
 		return false;
 	};
 	
-	//OH2 does not report all modes so use the default so it doesn't trip up Google Assistant
+	//OH2 does not report all modes, using default Google Assistant
 	var defaultThermModes = 'off, cool, heat, on, heatcool';
 	// Checks for a Fahrenheit tag and sets the righ property on the
 	// attributeDetails response object
 	var setTempFormat = function(item, attributeDetails) {
-		if (item.tags.indexOf('Fahrenheit') > -1 || item.tags.indexOf('fahrenheit') > -1) {
+		if (item.tags.toString().toLowerCase().includes('fahrenheit')) {
 			attributeDetails.availableThermostatModes = defaultThermModes;
 			attributeDetails.thermostatTemperatureUnit = 'F';
 		} else {
