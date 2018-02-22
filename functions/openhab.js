@@ -116,7 +116,7 @@ function getItemsState(request,response) {
 	let promises = devices.map(function(device) {	
 		return getItemAsync(authToken, device.id).then(function(res){ // success
 			
-          	console.log('openhabGoogleAssistant - getItemsState - result for ' + device.id + ': '  + JSON.stringify(res));
+          	console.log('openhabGoogleAssistant - getItemsState - result for ${device.id}: ${JSON.stringify(res)}`);
           	
           	var data = {};
           
@@ -176,7 +176,7 @@ function getTempData(item) {
 	var thermItems = item.tags.toString().includes("Thermostat") ? getThermostatItems(item.members) : getThermostatItems([item]);
 	
 	//Are we dealing with Fahrenheit?
-	var isF = item.tags.indexOf('Fahrenheit') >= 0 ? true : false;
+	const isF = item.tags.toString().toLowerCase().includes('fahrenheit');
 	
 	//store long json variables in easier variables to work with below
 	var tstatMode = thermItems.hasOwnProperty('heatingCoolingMode') ? (thermItems.heatingCoolingMode.state.length == 1 ? utils.normalizeThermostatMode(thermItems.heatingCoolingMode.state) : thermItems.heatingCoolingMode.state) : 'heat'
@@ -188,13 +188,13 @@ function getTempData(item) {
 	thermData.online = true;
 
 	//populate only the necessary json values, otherwise GA will get confused if keys are empty
-	if (item.tags.toString().includes("Thermostat")) {
+	if (item.tags.toString().toLowerCase().includes("thermostat")) {
 		thermData.thermostatMode = tstatMode;
 		if (thermItems.hasOwnProperty('currentTemperature')) thermData.thermostatTemperatureAmbient = Number(parseFloat(currTemp).toFixed(1));
 		if (thermItems.hasOwnProperty('targetTemperature')) thermData.thermostatTemperatureSetpoint = Number(parseFloat(tarTemp).toFixed(1));
 		if (thermItems.hasOwnProperty('currentHumidity')) thermData.thermostatHumidityAmbient = Number(parseFloat(curHum).toFixed(0));              
 	}
-	else if (item.tags.toString().includes("CurrentTemperature")) {
+	else if (item.tags.toString().toLowerCase().includes("currenttemperature")) {
 		thermData.thermostatMode = "heat"; // doesn't matter, GA will only state the number (since we force Ambient and Setpoint to match)
 		if (thermItems.hasOwnProperty('currentTemperature')) thermData.thermostatTemperatureAmbient = Number(parseFloat(currTemp).toFixed(1));
 		thermData.thermostatTemperatureSetpoint = thermData.thermostatTemperatureAmbient;
@@ -422,8 +422,8 @@ function adjustTemperatureWithItems(authToken, request, response, params, curren
 	}
 	
   	// Google Assistant needs (like Alexa) everything in Celsius, we will need to respect what a user has set
-  	var isF = tempUnit ? (tempUnit.toLowerCase() === 'fahrenheit') : false;
-  
+  	var isF = tempUnit.toLowerCase().includes('fahrenheit');
+	
 	var setValue;
 	setValue = isF ? utils.toF(params.thermostatTemperatureSetpoint) : params.thermostatTemperatureSetpoint;
 
