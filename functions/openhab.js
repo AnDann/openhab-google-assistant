@@ -477,15 +477,17 @@ function syncAndDiscoverDevices(token, success, failure) {
 		}
 		return false;
 	};
-
+	
+	//OH2 does not report all modes so use the default so it doesn't trip up Google Assistant
+	var defaultThermModes = 'off, cool, heat, on, heatcool';
 	// Checks for a Fahrenheit tag and sets the righ property on the
 	// attributeDetails response object
 	var setTempFormat = function(item, attributeDetails) {
 		if (item.tags.indexOf('Fahrenheit') > -1 || item.tags.indexOf('fahrenheit') > -1) {
-			attributeDetails.availableThermostatModes = 'off, cool, heat, on, heatcool';
+			attributeDetails.availableThermostatModes = defaultThermModes;
 			attributeDetails.thermostatTemperatureUnit = 'F';
 		} else {
-			attributeDetails.availableThermostatModes = 'off, cool, heat, on, heatcool';
+			attributeDetails.availableThermostatModes = defaultThermModes;
 			attributeDetails.thermostatTemperatureUnit = 'C';
 		}
 	};
