@@ -116,7 +116,7 @@ function getItemsState(request,response) {
 	let promises = devices.map(function(device) {	
 		return getItemAsync(authToken, device.id).then(function(res){ // success
 			
-          	console.log('openhabGoogleAssistant - getItemsState - result for ${device.id}: ${JSON.stringify(res)}`);
+          	console.log('openhabGoogleAssistant - getItemsState - result for ${device.id}: ${JSON.stringify(res)}');
           	
           	var data = {};
           
