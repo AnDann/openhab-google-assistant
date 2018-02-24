@@ -395,7 +395,7 @@ function adjustTemperature(request, response) {
 		response.status(500).set({
 			'Access-Control-Allow-Origin': '*',
 			'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-		}).json({ error: "failed" });
+		}).json({error: "failed" });
 	};
 
 	rest.getItem(authToken, deviceId, success, failure);
@@ -471,7 +471,7 @@ function adjustTemperatureWithItems(authToken, request, response, params, curren
 		response.status(500).set({
 			'Access-Control-Allow-Origin': '*',
 			'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-		}).json({ error: "failed" });
+		}).json({error: "failed"});
 	};
 
 	rest.postItemCommand(authToken, targetTemperature.name, setValue.toString(), success, failure);
@@ -495,11 +495,15 @@ function syncAndDiscoverDevices(token, success, failure) {
 	};
 
 	// Checks for a Fahrenheit tag and sets the righ property on the
+	let	defaultThermModes = 'off, cool, heat, on, heatcool';
+
 	// attributeDetails response object
 	var setTempFormat = function (item, attributeDetails) {
 		if (item.tags.indexOf('Fahrenheit') > -1 || item.tags.indexOf('fahrenheit') > -1) {
-			attributeDetails.thermostatTemperatureUnit = 'F';
+			attributeDetails.availableThermostatModes = defaultThermModes;
+          	attributeDetails.thermostatTemperatureUnit = 'F';
 		} else {
+			attributeDetails.availableThermostatModes = defaultThermModes;
 			attributeDetails.thermostatTemperatureUnit = 'C';
 		}
 	};
@@ -558,11 +562,11 @@ function syncAndDiscoverDevices(token, success, failure) {
 					switch (tag) {
 
 						case 'Lighting':
-							deviceTypes = ['action.devices.types.LIGHT'];
+							deviceTypes = 'action.devices.types.LIGHT';
 							traits = getSwitchableTraits(item);
 							break;
 						case 'Switchable':
-							deviceTypes = ['action.devices.types.SWITCH'];
+							deviceTypes = 'action.devices.types.SWITCH';
 							traits = getSwitchableTraits(item);
 							break;
 						case 'CurrentTemperature':
@@ -573,6 +577,7 @@ function syncAndDiscoverDevices(token, success, failure) {
 									'action.devices.traits.TemperatureSetting'
 								];
 								setTempFormat(item, attributeDetails);
+                              	deviceTypes = 'action.devices.types.THERMOSTAT';
 							}
 							break;
 						case 'Thermostat':
@@ -582,7 +587,7 @@ function syncAndDiscoverDevices(token, success, failure) {
 									'action.devices.traits.TemperatureSetting'
 								];
 								setTempFormat(item, attributeDetails);
-								deviceTypes = ['action.devices.types.THERMOSTAT'];
+								deviceTypes = 'action.devices.types.THERMOSTAT';
 							}
 							break;
 						default:
